@@ -1,0 +1,7 @@
+.ui-tooltip{
+    z-index: 9999;
+}
+
+.wide-modal .modal-dialog{
+    width: 800px;
+}

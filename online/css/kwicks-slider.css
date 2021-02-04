@@ -1,0 +1,48 @@
+/* This css file serves as a template for styling your kwicks.  Feel free to modify, but please make note of the comments - some of them are important. */
+
+#kwicks {
+	/* recommended styles for kwicks ul container */
+	list-style:none;
+	position:relative;
+	margin:0;
+	padding:0;
+	background-color:#333;
+}
+#kwicks li {
+	/* these are required, but the values are up to you (must be pixel) */
+	width:250px;
+	height:340px;
+	/*do not change these */
+	display:block;
+	overflow:hidden;
+	padding:0;  /* if you need padding, do so with an inner div (or implement your own box-model hack) */
+}
+#kwicks.horizontal li {
+	/* This is optional and will be disregarded by the script.  However, it should be provided for non-JS enabled browsers. */
+	/* margin-right:5px; Set to same as spacing option. */	
+	float:left;
+}
+#kwicks.vertical li {
+	/* This is optional and will be disregarded by the script.  However, it should be provided for non-JS enabled browsers. */
+	/* margin-bottom:5px; Set to same as spacing option. */
+}
+#kwicks.horizontal .kwicks-caption {
+	position:absolute;
+	left:0px;
+	bottom: 40px;
+	color:#fff;
+	width:550px;
+	padding:20px 20px 0 20px;
+	background:transparent url(../images/slider-caption-background.png) repeat scroll left top;
+}
+#kwicks.horizontal .kwicks-shadow {
+	position:absolute;
+	top:0;
+	right:0;
+	width:50px;
+	height:400px;
+	background:transparent url(../images/slider-shadow.png) repeat-y scroll left top;
+}
+#kwicks.horizontal .kwicks-caption h1, #kwicks.horizontal .kwicks-caption h2, #kwicks.horizontal .kwicks-caption h3, #kwicks.horizontal .kwicks-caption h4, #kwicks.horizontal .kwicks-caption h5, #kwicks.horizontal .kwicks-caption h6 {
+	color:#fff;
+}

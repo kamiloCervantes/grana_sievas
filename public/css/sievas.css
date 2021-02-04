@@ -1,0 +1,12 @@
+.navbar-sievas{
+    background: #800000;
+    border-bottom: 1px solid #800000;
+}
+
+.panel-primary .panel-heading{
+    background: #770000;
+}
+
+.panel-primary{
+    border-color: #770000;
+}
