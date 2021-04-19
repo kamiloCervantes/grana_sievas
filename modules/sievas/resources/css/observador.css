@@ -1,0 +1,8 @@
+.hijo{
+    display: none;
+    visibility: hidden;
+}
+.padre:hover .hijo{
+    display: block;
+    visibility: visible;
+}

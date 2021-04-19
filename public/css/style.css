@@ -1,0 +1,47 @@
+#navigation a:hover{
+    color: #ffeb40 !important;
+}
+
+/* mensajes de error de formularios */
+label.error{
+    color: red;
+}
+
+#data_tabla tr td:last-child{
+    text-align: center;
+}
+.datepicker{
+    z-index:9999!important;
+}
+
+/* Footer */
+footer.navbar-fixed-bottom {
+  font-size: 16px;
+  font-family: "PT Sans", Arial, Helvetica, sans-serif;
+  line-height: 18px;
+  font-weight: 400;
+}
+
+.login-form .footer {
+  margin-top: 20px;
+}
+
+footer.white {
+  padding-top: 20px;
+  height: 50px;
+  background: white;
+  text-align: center;
+}/* Footer */
+
+.navbar-inverse{
+    background: #0087CF;
+    border-color: #2A2AFF;
+}	
+
+.navbar-brand {
+  float: left;
+  height: 50px;
+  padding: 0px 15px;
+  font-size: 18px;
+  line-height: 20px;
+}
