@@ -14,18 +14,14 @@
         <input type="hidden" id="word_data" name="word_data">
     </form>
     <a href="#" class="guardarword">Guardar como Word</a>
-    <?php if(!(Auth::info_usuario('ev_cna') > 0 || $evaluacion_data['ev_cna'] > 0)){ ?>
-    <a href="index.php?mod=sievas&controlador=avances&accion=reporte_evaluacion_pdf&momento=<?php echo $momento ?>" class="guardarpdf">Guardar como PDF</a>
-    <?php } ?>
-    <a href="#" class="imprimir">Imprimir</a>
     <a href="index.php?mod=sievas&controlador=avances&accion=resultados_evaluacion">Cancelar</a>
 </div>
 <div class="word_version" style="border: 1px solid #ccc; background: #fff; padding: 60px;">
+<canvas id="cvs" width="500" height="400" style="display: none"></canvas>
     <?php 
 $i = 1;
 foreach ($rubros as $r){ ?>
 <strong><?php echo Auth::info_usuario('ev_cna') > 0 ? 'FACTOR ': 'RUBRO '?><?php echo "$i. ".$r['nom_lineamiento']; ?></strong><br/>
-
 <?php 
 	$c = 1;
     foreach($r['lineamientos'] as $l){ ?>
@@ -51,7 +47,7 @@ foreach ($rubros as $r){ ?>
     
     <br/>
     <p><strong>Grafindicámetro del rubro</strong></p>
-    <img src="index.php?mod=sievas&controlador=avances&accion=generar_radar&rid=<?php echo $r['id'] ?>&momento=<?php echo $momento ?>" />
+    <img class="grafindicametro-rubros" data-datos='<?php echo $r['calificaciones'] == null ? '0,0,0,0,0,0,0,0,0,0' : implode(',',$r['calificaciones'])?>'>                  
     <br/>
 <?php 
 $i++; 
