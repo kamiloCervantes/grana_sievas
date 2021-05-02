@@ -16,14 +16,13 @@ class Auth
         $consultaUsuario = sprintf('select su.username, su.cod_persona, su.creador, su.idioma, su.lmcc_access, su.cod_idioma FROM sys_usuario su 
 			WHERE su.username = "%s" and passwd = "%s" and autorizado="1"',
 			\BD::$db->escape($usuario), 
-            md5(\BD::$db->escape($contrasena)));
-            
+			md5(\BD::$db->escape($contrasena)));
 //        var_dump($consultaUsuario);
-        $resultadoCU = \BD::$db->query($consultaUsuario); 
+//        var_dump($consultaUsuario);
+        $resultadoCU = \BD::$db->query($consultaUsuario);    
         $creador = null;
         if ($resultadoCU->numRows() > 0) { //Si el usuario esta registrado
             $row = $resultadoCU->fetchRow();
-           
             $creador = $row['creador'] !== null ? $row['creador'] : null;
             if($creador != null){                
                 \Session::set('usuario', $usuario, 'auth');

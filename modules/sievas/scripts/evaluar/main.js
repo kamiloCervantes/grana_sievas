@@ -425,6 +425,7 @@ evaluar.initreevaluacion = function(){
         $('.current').removeClass('current');
         $(this).parent().parent().addClass('current');
         $('.opinion-data', $(this).parent()).remove();
+        $('.opinion-preview').remove();
         var opinion = $(this).val();
         switch(opinion){
             case '0':
@@ -484,7 +485,7 @@ evaluar.initreevaluacion = function(){
             $('.opinion-preview').remove();
             var opcion = fortalezas_opcion > 0 ? 'fortalezas_data' : debilidades_opcion > 0 ? 'debilidades_data' : planesmejora_opcion > 0 ? 'planesmejora_data' : '';
             var data_preview = fortalezas_opcion > 0 ? data.fortalezas : debilidades_opcion > 0 ? data.debilidades : planesmejora_opcion > 0 ? data.planesmejora : '';
-            $("."+opcion).append('<div class="opinion-preview"><br/>'+decodeURIComponent(data_preview)+'</div>');
+            $("."+opcion).append('<div class="opinion-preview" style="color: blue"><br/>'+decodeURIComponent(data_preview)+'</div>');
             bootbox.alert("Se ha guardado su evaluación");
         });
 

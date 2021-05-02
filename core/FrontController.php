@@ -1,16 +1,11 @@
 <?php
-
 session_start();
-
 class FrontController
 {
     static function main()
     {
-        
-        //Incluimos algunas clases:
-       
+		//Incluimos algunas clases:
         require_once CORE_PATH.'db/config.php';
-        
         require_once CORE_PATH.'db/eval.php';
 
         require CORE_PATH.'Config.php'; //de configuracion
@@ -22,14 +17,17 @@ class FrontController
         require CORE_PATH.'View.php'; //Mini motor de plantillas
         require CORE_PATH.'Session.php'; //motor de sesion
         require LIBS_PATH.'load.php';
-
+//        
+//        $lang = array(
+//            'test' => 'hola'
+//        );
         
         
         $config = Config::singleton();
-//                    
+                    
         require $config->get('modulesFolder').'auth/controllers/Auth.php';
-//        
-//		
+        
+		
         if(!empty($_GET['mod'])){
             $moduleName = trim($_GET['mod']);
         }else{
@@ -37,10 +35,10 @@ class FrontController
             $moduleName = 'auth';
         }
 		
-//        //Con el objetivo de no repetir nombre de clases, nuestros controladores
-//        //terminaran todos en Controller. Por ej, la clase controladora Items, ser� ItemsController
-//
-//        //Formamos el nombre del Controlador o en su defecto, tomamos que es el IndexController
+        //Con el objetivo de no repetir nombre de clases, nuestros controladores
+        //terminaran todos en Controller. Por ej, la clase controladora Items, ser� ItemsController
+
+        //Formamos el nombre del Controlador o en su defecto, tomamos que es el IndexController
         if(! empty($_GET['controlador']))
               $controllerName = $_GET['controlador'] . 'Controller';
         else
@@ -51,14 +49,14 @@ class FrontController
               $actionName = $_GET['accion'];
         else
               $actionName = "index";
-//             
-//             
+             
+             
         if(is_dir(APP_PATH.DS.$config->get('modulesFolder').$moduleName)){
             $controllerPath = APP_PATH.DS.$config->get('modulesFolder').$moduleName.DS.$config->get('controllersFolder') . $controllerName . '.php';
         }else{
             die('El modulo no existe - 404 not found');
         }	
-
+//        echo $controllerPath;die;
             //Incluimos el fichero que contiene nuestra clase controladora solicitada	
         if(is_file($controllerPath))
               require $controllerPath;
@@ -70,18 +68,32 @@ class FrontController
         {
             trigger_error ($controllerName . '->' . $actionName . '` no existe', E_USER_NOTICE);
             return false;
-        }  
-        
-//
+        }   
+
 	  if(!Auth::autenticado()){
+//              var_dump($_GET['mod']);
+//              var_dump($controllerName);
+////              var_dump(($controllerName !== 'usuariosController' && $_GET['mod'] != 'auth'));
+//              var_dump(!Auth::tiene_permiso($_GET['controlador'], $_GET['accion']));
             if(!Auth::tiene_permiso($_GET['controlador'], $_GET['accion'])){
-//                header('Location:index.php?mod=auth&controlador=usuarios&accion=login');
+                header('Location:index.php?mod=auth&controlador=usuarios&accion=login');
             }else{
                 if($actionName === 'index')
                     header('Location:index.php?controlador=usuarios&accion=login');
             }
         }else{
-
+//            var_dump((!Session::isset_data('rol', 'auth') && !Auth::tiene_permiso($_GET['controlador'], $actionName)));
+//            var_dump(($controllerName === 'usuariosController' && ($actionName === 'login')));
+//            var_dump((!Auth::tiene_permiso($_GET['controlador'], $actionName)));
+//            if(!Session::isset_data('rol', 'auth') && !Auth::tiene_permiso($_GET['controlador'], $actionName)){                                
+//                header('Location: index.php?mod=auth&controlador=usuarios&accion=locacion');
+//            }
+//            if($controllerName === 'usuariosController' && ($actionName === 'login')){                
+//                header('Location:index.php?mod=default&controlador=menu&accion=modulos');
+//            }
+//            if(!Auth::tiene_permiso($_GET['controlador'], $actionName)){ 
+//                header('Location:index.php?controlador=usuarios&accion=oops');
+//            }
         }
 
 

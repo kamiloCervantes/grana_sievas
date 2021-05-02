@@ -3473,9 +3473,9 @@ class evaluarController extends ControllerBase{
                         $model->commit();
                         echo json_encode(array(
                             'status' => 'ok',
-                            'fortalezas' => $fortalezas_data,
-                            'debilidades' => $debilidades_data,
-                            'planesmejora' => $planesmejora_data
+                            'fortalezas' => $fortalezas,
+                            'debilidades' => $debilidades,
+                            'planesmejora' => $plan_mejoramiento
                         ));
                     }
                     else{
@@ -3530,7 +3530,12 @@ class evaluarController extends ControllerBase{
 
                 if($model_reevaluacion->update()){
                     $model_detalle->commit();
-                    echo json_encode(array('status' => 'ok'));
+                     echo json_encode(array(
+                            'status' => 'ok',
+                            'fortalezas' => $fortalezas,
+                            'debilidades' => $debilidades,
+                            'planesmejora' => $plan_mejoramiento
+                        ));
                 }
                 else{
                     $model_reevaluacion->cod_momento_resultado = $evaluacion_chk[0]['resultado_id'];
