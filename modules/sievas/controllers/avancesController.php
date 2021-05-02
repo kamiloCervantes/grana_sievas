@@ -3567,10 +3567,45 @@ class avancesController extends ControllerBase{
                     $momento_evaluacion);
             
             $lineamientos_data = BD::$db->queryAll($sql_lineamientos_data);   
-            
-//            foreach($lineamientos as $k=>$l){
 
-//            }
+            $sql_lineamientos_calificacion = sprintf("SELECT
+            gradacion_escalas.valor_escala,
+            lineamientos.id,
+            lineamientos.padre_lineamiento,
+            momento_resultado_detalle.activo
+            FROM
+            momento_resultado_detalle
+            left JOIN gradacion_escalas ON momento_resultado_detalle.cod_gradacion_escala = gradacion_escalas.id
+            left JOIN momento_resultado ON momento_resultado_detalle.cod_momento_resultado = momento_resultado.id
+            INNER JOIN momento_evaluacion ON momento_resultado.cod_momento_evaluacion = momento_evaluacion.id
+            INNER JOIN lineamientos ON momento_resultado_detalle.cod_lineamiento = lineamientos.id
+            WHERE
+            momento_evaluacion.id = %s", $momento_evaluacion);
+            
+            $calificaciones = BD::$db->queryAll($sql_lineamientos_calificacion);
+            $inactivos = 0;
+             foreach($calificaciones as $c){
+                if($r['id'] == $c['padre_lineamiento']){                    
+                    foreach($lineamientos as $k=>$l){                        
+                        if($l['lineamiento_id'] === $c['id']){
+                              if($c['activo'] > 0){
+                                    $lineamientos[$k]['valor'] = ($c['valor_escala'] > 0 ? $c['valor_escala'] : 0);
+                                    $rubros[$key]['calificaciones'][] = ($c['valor_escala'] > 0 ? $c['valor_escala'] : 0);                                    
+                                    
+                                    $avg += ($c['valor_escala'] > 0 ? $c['valor_escala'] : 0);
+                              }  
+                              else{
+                                    $lineamientos[$k]['valor'] = 0;
+                                    $rubros[$key]['calificaciones'][] = 0;
+                                    $inactivos++;
+                              }
+                              
+                        }
+                    }
+                }
+            }
+            
+
             
             foreach($lineamientos_data as $ld){
                 if($r['id'] === $ld['padre_lineamiento']){
@@ -3650,6 +3685,20 @@ class avancesController extends ControllerBase{
         $vars['rubros'] = $rubros;
         $vars['momento'] = $momento;
         $vars['momento_evaluacion'] = $momento_evaluacion;
+        View::add_js('public/js/wordgen/FileSaver.min.js'); 
+        View::add_js('public/js/wordgen/jquery.wordexport.js'); 
+        View::add_js('public/js/RGraph/libraries/RGraph.common.core.js'); 
+        View::add_js('public/js/RGraph/libraries/RGraph.common.dynamic.js'); 
+        View::add_js('public/js/RGraph/libraries/RGraph.common.annotate.js'); 
+        View::add_js('public/js/RGraph/libraries/RGraph.common.context.js'); 
+        View::add_js('public/js/RGraph/libraries/RGraph.common.effects.js'); 
+        View::add_js('public/js/RGraph/libraries/RGraph.common.key.js'); 
+        View::add_js('public/js/RGraph/libraries/RGraph.common.resizing.js'); 
+        View::add_js('public/js/RGraph/libraries/RGraph.common.tooltips.js'); 
+        View::add_js('public/js/RGraph/libraries/RGraph.common.zoom.js'); 
+        View::add_js('public/js/RGraph/libraries/RGraph.bar.js'); 
+        View::add_js('public/js/RGraph/libraries/RGraph.pie.js'); 
+        View::add_js('public/js/RGraph/libraries/RGraph.radar.js'); 
         View::add_js('modules/sievas/scripts/avances/main.js'); 
         View::add_js('modules/sievas/scripts/avances/reporte_evaluacion.js'); 
         View::render('avances/reporte_evaluacion_html.php', $vars, 'reporte.php');

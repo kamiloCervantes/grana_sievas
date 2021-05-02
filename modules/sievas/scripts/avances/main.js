@@ -1101,11 +1101,47 @@ avances.graficar_grafindicametros = function(data){
 }
 
 avances.initreporteevaluacion = function(){
-    //guardar word
+    $('.grafindicametro-rubros').each(function(idx, el){
+        el = $(el);
+        //crear radar con data de el
+        RGraph.reset(document.getElementById('cvs'));
+        var datos = el.data('datos').split(',');
+        if(datos.length > 5){
+            radar = new RGraph.Radar('cvs', [10,10,10,10,10,10,10,10,10,10], datos ,[3,3,3,3,3,3,3,3,3,3],[6,6,6,6,6,6,6,6,6,6])
+                .set('labels', ['1','2','3','4','5','6','7','8','9','10'])
+                .set('colors', ['rgba(133,235,106,0.5)','rgba(70,111,213,0.5)', 'rgba(200,0,0,0.0)','rgba(55,0,0,0.0)'])
+                .set('axes.color', 'rgba(0,0,0,0)')
+                .set('text.size', '10')
+                .set('labels.axes', 'N')
+                .set('labels.axes.boxed', false)
+                .set('labels.axes.boxed.zero', false)
+                .set('labels.offset', 20)
+                .set('accumulative', false)
+                .set('background.circles.poly', true)
+                .set('strokestyle', ['#2dd700','rgba(0,0,0,0)', 'red', 'yellow'])
+                .set('radius', 150)
+                .set({
+                    contextmenu: [
+                        ['Get PNG', RGraph.showPNG],
+                        null,
+                        ['Cancel', function () {}]
+                    ]
+                })
+                .draw();
+            //generar png
+            el.attr('src', $('#cvs')[0].toDataURL());
+        }
+        else{
+            el.replaceWith('<p>No hay suficientes datos para generar el grafindicametro</p>');
+        }
+    });
+
+    console.log($('#cvs')[0].toDataURL());
+    $('#cvs2').attr('src', $('#cvs')[0].toDataURL());
+
     $('.guardarword').on('click', function(e){
         e.preventDefault();
-        $('#word_data').val($('.word_version').html());
-        $('#generate_word')[0].submit();
+        $('.word_version').wordExport();
     });
     
     $('.imprimir').on('click', function(e){
