@@ -1,0 +1,39 @@
+#resultados {
+    /* width: 100%; */ /* Optional */
+    /* border-collapse: collapse; */
+    border-spacing: 0;
+
+}
+
+#resultados tbody,
+#resultados thead { 
+    display: block;
+    width: 100%;
+}
+
+#resultados thead tr th { 
+    height: 30px;
+    line-height: 30px;
+    /* text-align: left; */
+
+}
+
+#resultados tbody {
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#resultados tbody { 
+    width: 100%;
+}
+
+#resultados tbody td, thead th {
+    /* width: 20%; */ /* Optional */
+   width: 1%;
+    /* white-space: nowrap; */
+}
+
+#resultados tbody td:last-child, thead th:last-child {
+    border-right: none;
+}

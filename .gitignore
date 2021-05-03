@@ -1,0 +1,9 @@
+error_log
+error_log.txt
+2config.php
+public/files/
+config.php
+core/db/
+.ftp*
+
+
