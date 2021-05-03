@@ -7,3 +7,4 @@ core/db/*
 .ftp*
 .gitignore
 /.vscode
+/nbproject
