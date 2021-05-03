@@ -1,0 +1,9 @@
+error_log
+error_log.txt
+2config.php
+config.php
+public/files/
+core/db/*
+.ftp*
+.gitignore
+/.vscode
