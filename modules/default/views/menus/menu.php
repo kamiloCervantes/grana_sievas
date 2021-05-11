@@ -110,7 +110,7 @@ if (Session::get('rol') == 1) {?>
     
     <?php } else { ?>
             <?php if(Auth::info_usuario('ev_anterior') > 0) { ?>
-        <li><a href="index.php?mod=sievas&controlador=evaluar&accion=reevaluar&mostrar_ee=1">
+        <li><a href="index.php?mod=sievas&controlador=evaluar&accion=guardar">
                 <i class="glyphicon glyphicon-screenshot"></i> <?php echo $t->__('Evaluar', Auth::info_usuario('idioma')); ?></a></li>
         <?php } else { ?>
         <?php switch(Auth::info_usuario('ev_version')){ 
