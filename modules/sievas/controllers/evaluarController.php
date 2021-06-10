@@ -1625,6 +1625,7 @@ class evaluarController extends ControllerBase{
         $vars['momento_evaluacion'] = $momento_evaluacion;
         $vars['momento_actual'] = $momento_actual_arr['cod_momento_evaluacion'];
         $vars['cod_momento_actual'] = $momento_actual_arr['cod_momento'];
+        $vars['controls'] = $_GET['controls'];
 
 
 
@@ -1646,7 +1647,14 @@ class evaluarController extends ControllerBase{
         View::add_js('public/js/jquery.validate.js');
         View::add_js('modules/sievas/scripts/evaluar/main.js');
         View::add_js('modules/sievas/scripts/evaluar/reevaluacion.js');
-        View::render('evaluar/reevaluacion.php', $vars);
+
+        if(isset($_GET['controls']) && $_GET['controls'] == 0 ){
+            View::render('evaluar/reportereevaluacion.php', $vars);
+        }
+        else{
+            View::render('evaluar/reevaluacion.php', $vars);
+        }
+        
         }
         else{
             header('Location: index.php?mod=sievas&controlador=evaluar&accion=guardar');
