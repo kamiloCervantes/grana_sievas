@@ -218,11 +218,7 @@ foreach ($rubros as $r){ ?>
                 
                 
             </td>
-            <?php } ?>
-                
-            <td data-lineamiento="<?php echo $l['lineamiento_id']; ?>"><strong>Nueva calificación: </strong>
-                <input type="hidden" class="cal form-control" value="<?php echo ($l['evaluacion_actual']['escala_id'] == null ? '' : $l['evaluacion_actual']['escala_id'])?>">
-            </td>
+            <?php } ?>                
         </tr>
         <tr>
             <td colspan="2">
