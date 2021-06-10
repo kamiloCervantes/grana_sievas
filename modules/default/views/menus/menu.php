@@ -154,7 +154,7 @@ if (Session::get('rol') == 1) {?>
                 <?php echo $t->__('Ficha básica', Auth::info_usuario('idioma')); ?></a></li>
             <li><a href="index.php?mod=sievas&controlador=evaluaciones&accion=evaluador">
                 <i class="glyphicon glyphicon-user"></i> <?php echo $t->__('Perfil', Auth::info_usuario('idioma')); ?></a></li> 
-            <li><a href="index.php?mod=sievas&controlador=evaluar&accion=reevaluar&controls=0">
+            <li><a href="index.php?mod=sievas&controlador=evaluar&accion=reevaluar&mostrar_ee=1&controls=0">
                 <i class="glyphicon glyphicon-file"></i>
                 <?php echo $t->__('Ficha evaluaciones anteriores', Auth::info_usuario('idioma')); ?></a></li>
     <?php }
