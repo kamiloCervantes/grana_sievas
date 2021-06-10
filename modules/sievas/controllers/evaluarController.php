@@ -2387,14 +2387,26 @@ class evaluarController extends ControllerBase{
        $vars = array();
        $privilegio_replica_red = false;
        if(Auth::info_usuario('ev_red') > 0){
+           $sql_evaluaciones = "";
            $evaluacion = Auth::info_usuario('evaluacion');
-           $sql_evaluaciones = sprintf("SELECT
-            evaluacion.id as e_id,
-            evaluacion.etiqueta
-            FROM
-            evaluacion
-            WHERE
-            evaluacion.padre = %s", $evaluacion);
+           if(Auth::info_usuario('ev_padre') > 0){
+              $sql_evaluaciones = sprintf("SELECT
+               evaluacion.id as e_id,
+               evaluacion.etiqueta
+               FROM
+               evaluacion
+               WHERE
+               evaluacion.id = %s", Auth::info_usuario('ev_padre'));
+           } 
+           else{              
+              $sql_evaluaciones = sprintf("SELECT
+               evaluacion.id as e_id,
+               evaluacion.etiqueta
+               FROM
+               evaluacion
+               WHERE
+               evaluacion.padre = %s", $evaluacion);
+           }
 
             $evaluaciones = BD::$db->queryAll($sql_evaluaciones);
 //            var_dump($evaluaciones);
@@ -2740,37 +2752,68 @@ class evaluarController extends ControllerBase{
         $evaluacion = filter_input(INPUT_GET, 'evaluacion', FILTER_SANITIZE_NUMBER_INT);
         $lineamiento = filter_input(INPUT_GET, 'lineamiento', FILTER_SANITIZE_NUMBER_INT);
         $momento = filter_input(INPUT_GET, 'momento', FILTER_SANITIZE_NUMBER_INT);
+        
+        $sql_resultados = "";
+        if(Auth::info_usuario('ev_padre') > 0){
+            $sql_resultados = sprintf("SELECT distinct
+            gradacion_escalas.desc_escala,
+            momento_resultado_detalle.fortalezas,
+            momento_resultado_detalle.debilidades,
+            momento_resultado_detalle.plan_mejoramiento,
+            momento_evaluacion.id as momento_evaluacion,
+            lineamientos.nom_lineamiento,
+            eval_instituciones.nom_institucion,
+            eval_programas.programa,
+            evaluacion.id as e_id,
+            evaluacion.etiqueta
+            FROM
+            evaluacion
+            INNER JOIN lineamientos_conjuntos ON evaluacion.cod_conjunto = lineamientos_conjuntos.id
+            INNER JOIN lineamientos_detalle_conjuntos ON lineamientos_detalle_conjuntos.cod_conjunto = lineamientos_conjuntos.id
+            INNER JOIN lineamientos ON lineamientos_detalle_conjuntos.cod_lineamiento = lineamientos.id
+            INNER JOIN momento_evaluacion ON momento_evaluacion.cod_evaluacion = evaluacion.id
+            LEFT JOIN momento_resultado ON momento_resultado.cod_momento_evaluacion = momento_evaluacion.id
+            LEFT JOIN momento_resultado_detalle ON momento_resultado_detalle.cod_lineamiento = lineamientos.id AND momento_resultado_detalle.cod_momento_resultado = momento_resultado.id
+            LEFT JOIN gradacion_escalas ON momento_resultado_detalle.cod_gradacion_escala = gradacion_escalas.id
+            INNER JOIN eval_programas ON eval_programas.id = evaluacion.cod_evaluado
+            INNER JOIN eval_instituciones ON eval_programas.cod_institucion = eval_instituciones.id
+            WHERE
+            evaluacion.id = %s AND
+            momento_evaluacion.cod_momento = %s AND
+            lineamientos.id = %s", $evaluacion, $momento, $lineamiento);
+        }
+        else{
+            $sql_resultados = sprintf("SELECT distinct
+            gradacion_escalas.desc_escala,
+            momento_resultado_detalle.fortalezas,
+            momento_resultado_detalle.debilidades,
+            momento_resultado_detalle.plan_mejoramiento,
+            momento_evaluacion.id as momento_evaluacion,
+            lineamientos.nom_lineamiento,
+            eval_instituciones.nom_institucion,
+            eval_programas.programa,
+            evaluacion.id as e_id,
+            evaluacion.etiqueta
+            FROM
+            evaluacion
+            INNER JOIN lineamientos_conjuntos ON evaluacion.cod_conjunto = lineamientos_conjuntos.id
+            INNER JOIN lineamientos_detalle_conjuntos ON lineamientos_detalle_conjuntos.cod_conjunto = lineamientos_conjuntos.id
+            INNER JOIN lineamientos ON lineamientos_detalle_conjuntos.cod_lineamiento = lineamientos.id
+            INNER JOIN momento_evaluacion ON momento_evaluacion.cod_evaluacion = evaluacion.id
+            LEFT JOIN momento_resultado ON momento_resultado.cod_momento_evaluacion = momento_evaluacion.id
+            LEFT JOIN momento_resultado_detalle ON momento_resultado_detalle.cod_lineamiento = lineamientos.id AND momento_resultado_detalle.cod_momento_resultado = momento_resultado.id
+            inner JOIN gradacion_escalas ON momento_resultado_detalle.cod_gradacion_escala = gradacion_escalas.id
+            INNER JOIN eval_programas ON eval_programas.id = evaluacion.cod_evaluado
+            INNER JOIN eval_instituciones ON eval_programas.cod_institucion = eval_instituciones.id
+            WHERE
+            evaluacion.id = %s AND
+            momento_evaluacion.cod_momento = %s AND
+            lineamientos.id = %s", $evaluacion, $momento, $lineamiento);
+        }
+        
 
-        $sql_resultados = sprintf("SELECT distinct
-        gradacion_escalas.desc_escala,
-        momento_resultado_detalle.fortalezas,
-        momento_resultado_detalle.debilidades,
-        momento_resultado_detalle.plan_mejoramiento,
-        momento_evaluacion.id as momento_evaluacion,
-        lineamientos.nom_lineamiento,
-        eval_instituciones.nom_institucion,
-        eval_programas.programa,
-        evaluacion.id as e_id,
-        evaluacion.etiqueta
-        FROM
-        evaluacion
-        INNER JOIN lineamientos_conjuntos ON evaluacion.cod_conjunto = lineamientos_conjuntos.id
-        INNER JOIN lineamientos_detalle_conjuntos ON lineamientos_detalle_conjuntos.cod_conjunto = lineamientos_conjuntos.id
-        INNER JOIN lineamientos ON lineamientos_detalle_conjuntos.cod_lineamiento = lineamientos.id
-        INNER JOIN momento_evaluacion ON momento_evaluacion.cod_evaluacion = evaluacion.id
-        LEFT JOIN momento_resultado ON momento_resultado.cod_momento_evaluacion = momento_evaluacion.id
-        LEFT JOIN momento_resultado_detalle ON momento_resultado_detalle.cod_lineamiento = lineamientos.id AND momento_resultado_detalle.cod_momento_resultado = momento_resultado.id
-        inner JOIN gradacion_escalas ON momento_resultado_detalle.cod_gradacion_escala = gradacion_escalas.id
-        INNER JOIN eval_programas ON eval_programas.id = evaluacion.cod_evaluado
-        INNER JOIN eval_instituciones ON eval_programas.cod_institucion = eval_instituciones.id
-        WHERE
-        evaluacion.id = %s AND
-        momento_evaluacion.cod_momento = %s AND
-        lineamientos.id = %s", $evaluacion, $momento, $lineamiento);
 
-//        var_dump($sql_resultados);
-
-//        var_dump($sql_resultados);
+        //var_dump($sql_resultados);
 
         $resultados['resultados'] = BD::$db->queryRow($sql_resultados);
 
@@ -2818,7 +2861,7 @@ class evaluarController extends ControllerBase{
         $evaluacion = filter_input(INPUT_GET, 'evaluacion', FILTER_SANITIZE_NUMBER_INT);
         $lineamiento = filter_input(INPUT_GET, 'lineamiento', FILTER_SANITIZE_NUMBER_INT);
         $momento_evaluacion = filter_input(INPUT_GET, 'momento_evaluacion', FILTER_SANITIZE_NUMBER_INT);
-
+        
         $sql_resultados = sprintf("SELECT distinct
         evaluacion_analisis_indicadores.id,
         evaluacion_analisis_indicadores.analisis,

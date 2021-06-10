@@ -1944,7 +1944,7 @@ class evaluacionesController extends ControllerBase{
                     eval_instituciones.id,
                     eval_instituciones.nom_institucion,
                     gen_paises.id as cod_pais,
-                    gen_paises.nom_pais,
+                    gen_paises.nom_pais
                     FROM
                     eval_instituciones
                     INNER JOIN gen_paises ON eval_instituciones.cod_pais = gen_paises.id
@@ -2841,8 +2841,8 @@ class evaluacionesController extends ControllerBase{
         
         //momentos
         $tipo_momento_interna = filter_input(INPUT_POST, 'tipo_momento_interna', FILTER_SANITIZE_NUMBER_INT);
-        $fecha_inicio_interna = filter_input(INPUT_POST, 'fecha_inicio_interna', FILTER_SANITIZE_NUMBER_INT);
-        $fecha_fin_interna = filter_input(INPUT_POST, 'fecha_fin_interna', FILTER_SANITIZE_NUMBER_INT);
+        $fecha_inicio_interna = filter_input(INPUT_POST, 'fecha_inicio_interna', FILTER_SANITIZE_STRING);
+        $fecha_fin_interna = filter_input(INPUT_POST, 'fecha_fin_interna', FILTER_SANITIZE_STRING);
         $coordinador_interna = filter_input(INPUT_POST, 'coordinador_interna', FILTER_SANITIZE_NUMBER_INT);
         $evaluador_1_interna = filter_input(INPUT_POST, 'evaluador_1_interna', FILTER_SANITIZE_NUMBER_INT);
         $directivo_interna = filter_input(INPUT_POST, 'directivo_interna', FILTER_SANITIZE_NUMBER_INT);
@@ -2850,8 +2850,8 @@ class evaluacionesController extends ControllerBase{
         $estudiante_interna = filter_input(INPUT_POST, 'estudiante_interna', FILTER_SANITIZE_NUMBER_INT);
         $evaluador_3_interna = filter_input(INPUT_POST, 'evaluador_3_interna', FILTER_SANITIZE_NUMBER_INT);
         $tipo_momento_externa = filter_input(INPUT_POST, 'tipo_momento_externa', FILTER_SANITIZE_NUMBER_INT);
-        $fecha_inicio_externa = filter_input(INPUT_POST, 'fecha_inicio_externa', FILTER_SANITIZE_NUMBER_INT);
-        $fecha_fin_externa = filter_input(INPUT_POST, 'fecha_fin_externa', FILTER_SANITIZE_NUMBER_INT);
+        $fecha_inicio_externa = filter_input(INPUT_POST, 'fecha_inicio_externa', FILTER_SANITIZE_STRING);
+        $fecha_fin_externa = filter_input(INPUT_POST, 'fecha_fin_externa', FILTER_SANITIZE_STRING);
         $coordinador_externa = filter_input(INPUT_POST, 'coordinador_externa', FILTER_SANITIZE_NUMBER_INT);
         $evaluador_1_externa = filter_input(INPUT_POST, 'evaluador_1_externa', FILTER_SANITIZE_NUMBER_INT);
         $directivo_externa = filter_input(INPUT_POST, 'directivo_externa', FILTER_SANITIZE_NUMBER_INT);
@@ -2878,7 +2878,7 @@ class evaluacionesController extends ControllerBase{
             $model_evaluacion->fecha_inicia = $fecha_inicio_interna;
             $model_evaluacion->tipo_evaluado = $tipo_evaluado;
             $model_evaluacion->cod_conjunto = $conjunto_lineamientos;
-            $model_evaluacion->fecha_certificacion = $fecha_certificacion;
+            $model_evaluacion->fecha_certificacion = $fecha_fin_externa;
             $model_evaluacion->cod_evaluado = $evaluado;
             $model_evaluacion->etiqueta = $etiqueta;
             $model_evaluacion->ev_red = $ev_red;
@@ -3048,7 +3048,7 @@ class evaluacionesController extends ControllerBase{
             $model_evaluacion->fecha_inicia = $fecha_inicio_interna;
             $model_evaluacion->tipo_evaluado = $tipo_evaluado;
             $model_evaluacion->cod_conjunto = $conjunto_lineamientos;
-            $model_evaluacion->fecha_certificacion = $fecha_certificacion;
+            $model_evaluacion->fecha_certificacion = $fecha_fin_externa;
             $model_evaluacion->cod_evaluado = $evaluado;
             $model_evaluacion->etiqueta = $etiqueta;
             $model_evaluacion->ev_red = $ev_red;

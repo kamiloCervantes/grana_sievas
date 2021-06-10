@@ -269,10 +269,11 @@ class usuariosController extends ControllerBase
                 ", $evaluacion);
                 
                 $evaluacion_data = BD::$db->queryRow($sql_evaluacion);
-//                var_dump($evaluacion_data);
+                //var_dump($evaluacion_data);
                 $ev_red = 0;
                 
-                if($evaluacion_data['ev_red'] == '1' && $evaluacion_data['padre'] == null){
+               // if($evaluacion_data['ev_red'] == '1' && $evaluacion_data['padre'] == null){
+                if($evaluacion_data['ev_red'] == '1'){
                     $ev_red = 1;
                 }
                 
@@ -298,6 +299,7 @@ class usuariosController extends ControllerBase
                 Auth::info_usuario('evaluado',$evaluado);
                 Auth::info_usuario('evaluacion',$evaluacion);
                 Auth::info_usuario('ev_red',$ev_red);
+                Auth::info_usuario('ev_padre',$evaluacion_data['padre']);
                 Auth::info_usuario('comite_centro',$evaluacion_centro['comite_centro']);
                 Auth::info_usuario('ev_cna',$evaluacion_data['ev_cna']);
                 Auth::info_usuario('ev_anterior',$evaluacion_data['ev_anterior']);

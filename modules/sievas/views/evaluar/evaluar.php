@@ -85,7 +85,7 @@
                     </ul>
                 </div>      
                 <button type="button" class="btn btn-default" id="indicadores_item"><?php echo $t->__('Indicadores', Auth::info_usuario('idioma')); ?></button>
-       
+                
                 <?php if(Auth::info_usuario('ev_red')>0){ ?>
                 <div class="btn-group">
                     <button type="button" class="btn btn-default"><?php echo $t->__('Resultados red', Auth::info_usuario('idioma')); ?></button>
