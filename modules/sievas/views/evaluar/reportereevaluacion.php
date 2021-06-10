@@ -61,7 +61,7 @@
 
 
 <h4 class="sub-header">    
-	Reevaluacion <?php echo $cod_momento_actual == 1 ? 'interna' : 'externa' ?> :: <?php echo $evaluacion_data['etiqueta'] ?>
+	Ficha de evaluacion anterior <?php echo $cod_momento_actual == 1 ? 'interna' : 'externa' ?> :: <?php echo $evaluacion_data['etiqueta'] ?>
 </h4>
 <hr/>
 
@@ -109,7 +109,7 @@
         <td><?php echo $evaluacion_data['nom_pais']?></td>
     </tr>
     <tr>
-        <td colspan="2" style="text-align:center"><a href="index.php?mod=sievas&controlador=avances&accion=validacion_avances" class="btn btn-default btn-xs">Cambiar evaluación</a></td>
+        <td colspan="3" style="text-align:center"><a href="index.php?mod=sievas&controlador=avances&accion=validacion_avances" class="btn btn-default btn-xs">Cambiar evaluación</a></td>
     </tr>
 </table>
 
@@ -130,7 +130,7 @@ foreach ($rubros as $r){ ?>
     foreach($r['lineamientos'] as $l){ ?>
        
      <tr>
-            <td colspan="2" align="center" style="background:#dfa5a9;" class="print">
+            <td colspan="3" align="center" style="background:#dfa5a9;" class="print">
                 <a class="item-popover acceso_rapido_<?php echo $l['lineamiento_id']; ?>" data-rubro="<?php echo $l['lineamiento_id']; ?>" style="color: #000" name="<?php echo str_replace(' ', '-', $l['nom_lineamiento']) ?>">
                     <strong><?= "$i.$c. $l[nom_lineamiento]"; ?></strong></a></td>          
 		</tr>
@@ -192,27 +192,7 @@ foreach ($rubros as $r){ ?>
                </div>                   
                </div>
             </td>
-            <td>
-                <div class="row">
-               <div class="col-sm-6">
-               <p>Promedio general</p>
-               <div class="progress">
-               <div class="promedio-gral progress-bar <?php echo $l['estadisticas_n']['puntaje'] <= $l['gradacion']['nivel_bajo'] ? 'progress-bar-danger' : $l['estadisticas_n']['puntaje'] <= $l['gradacion']['nivel_medio'] && $l['estadisticas_n']['puntaje'] > $l['gradacion']['nivel_bajo'] ? 'progress-bar-warning' : $l['estadisticas_n']['puntaje'] <= $l['gradacion']['nivel_alto'] && $l['estadisticas_n']['puntaje'] > $l['gradacion']['nivel_medio'] ? 'progress-bar-success' : '' ?>" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $l['estadisticas_n']['puntaje']*10?>%;">
-               <?php echo $l['estadisticas_n']['puntaje']?> 
-               </div>
-               </div>
-               </div>
-               <div class="col-sm-6">
-               <p>Calificación rubro </p>
-               <div class="progress">
-               <div data-rubro="<?php echo $r['id']; ?>"  data-lineamiento="<?php echo $l['lineamiento_id'] ?>" class="promedio-rubro progress-bar <?php echo $l['estadisticas_n']['calificacion_rubro']['valor'] <= $l['gradacion']['nivel_bajo'] ? 'progress-bar-danger' : $l['estadisticas_n']['calificacion_rubro']['valor'] <= $l['gradacion']['nivel_medio'] && $l['estadisticas_n']['calificacion_rubro']['valor'] > $l['gradacion']['nivel_bajo'] ? 'progress-bar-warning' : $l['estadisticas_n']['calificacion_rubro']['valor'] <= $l['gradacion']['nivel_alto'] && $l['estadisticas_n']['calificacion_rubro']['valor'] > $l['gradacion']['nivel_medio'] ? 'progress-bar-success' : '' ?>
-" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $l['estadisticas_n']['calificacion_rubro']['porcentaje']?>%">
-               <?php echo $l['estadisticas_n']['calificacion_rubro']['valor']?> 
-               </div>                       
-               </div>
-               </div>                   
-               </div>
-            </td>
+           
         </tr>
         <tr>
             <?php if($mostrar_ee == 1){ ?>
@@ -245,7 +225,7 @@ foreach ($rubros as $r){ ?>
             </td>
         </tr>
         <tr>
-            <td colspan="3">
+            <td colspan="2">
                 <div class="alert alert-info">
                     <i class="glyphicon glyphicon-file"></i> <?php echo $t->__('Documentos', Auth::info_usuario('idioma')); ?>:
                     <div id="documentos"><?php echo urldecode($l['documentos']); ?></div>
@@ -253,7 +233,7 @@ foreach ($rubros as $r){ ?>
             </td>
         </tr>
         <tr>
-            <td colspan="3" class="print"><strong>Anexos: </strong>
+            <td colspan="2" class="print"><strong>Anexos: </strong>
                 <div class="listado-anexos" style="display: inline" data-lineamiento="<?php echo $l['lineamiento_id']; ?>">
                 <?php 
                 foreach($l['anexos'] as $a){ ?>
@@ -265,31 +245,7 @@ foreach ($rubros as $r){ ?>
                     	<i class="glyphicon glyphicon-trash rm-anexos-popover" data-rubro="<?php echo $l['lineamiento_id']; ?>" style="top: 3px;color: red;"></i>
             </td>
 		</tr>
-        <?php if(Auth::info_usuario('ev_cna') > 0 || $evaluacion_data['ev_cna'] > 0){ ?>
-
-        <tr>
-            <td colspan="3" style="padding-left:40px; background:#dfa5a9;"><strong>Análisis de indicadores</strong></td>
-        </tr>
-        <tr> 
-            <td width="54%" class="print" style="padding-left:40px; background:#FEDADF;"><strong>Indicador</strong></td>
-            <td width="22%" class="print" style="padding-left:40px; background:#FEDADF;"><strong>Análisis</strong></td>      
-            <td width="22%" class="print" style="padding-left:40px; background:#FEDADF;"><strong>Anexos</strong></td>
-        </tr>
-        <?php foreach($l['analisis_indicador'] as $a){ ?>
-        <tr> 
-            <td class="print"><?php echo $a['nom_lineamiento'] ?></td>
-            <td class="print"><?php echo urldecode($a['analisis']) ?></td>      
-            <td class="print">
-            <?php 
-                foreach($a['anexos'] as $an){ ?>
-                	<a href="<?php echo $an['ruta']?>" target="_blank"><span class="label label-primary">
-                    	<i class="glyphicon glyphicon-file"></i> <?php echo $an['nombre']?></span></a><?php 
-				}   ?>
-           
-            </td>
-        </tr>
-        <?php } ?>
-        <?php } ?>
+        
         
        <?php  
 	$c++;
