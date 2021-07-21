@@ -2541,6 +2541,225 @@ class avancesController extends ControllerBase{
             header('Location: index.php?mod=sievas&controlador=evaluar&accion=guardar');
         }
     }
+
+
+    public function avances_evaluacion_n(){ 
+        $evaluacion = Auth::info_usuario('evaluacion');    
+        $evaluacion_anterior = Auth::info_usuario('evaluacion_anterior');      
+        $rol = Auth::info_usuario('rol');
+        
+//        var_dump(memory_get_usage());
+        if($rol == null){
+            $evaluacion = $_GET['evaluacion'];
+            $sql_evaluacion = sprintf("SELECT e.etiqueta, p.programa, i.nom_institucion, pa.nom_pais FROM sievas.evaluacion as e
+            inner join sievas.eval_programas as p on e.cod_evaluado = p.id
+            inner join sievas.eval_instituciones as i on p.cod_institucion = i.id
+            inner join sievas.gen_paises as pa on i.cod_pais = pa.id
+            where e.tipo_evaluado = 2 and e.id = %s", $evaluacion);
+            
+            $evaluacion_data = BD::$db->queryRow($sql_evaluacion);
+            $vars['evaluacion_data'] = $evaluacion_data;
+        }
+        if($evaluacion > 0){
+//            var_dump(memory_get_usage());
+            if($rol == null){
+                $momento = $_GET['momento'];
+                if($_GET['momento'] == null)
+                $momento = 1;
+                
+               
+                $sql_momento = sprintf("select id from momento_evaluacion where cod_momento = %s and cod_evaluacion = %s", $momento, $evaluacion);
+                $momento_evaluacion = BD::$db->queryOne($sql_momento);
+            }
+            else{
+                $momento = $_GET['momento'];
+                $momento_actual = $this->get_momento_actual();
+                $momento_evaluacion = $momento_actual["momento_id"];
+                
+                
+                
+//                var_dump($momento_actual["cod_momento"]);
+//                var_dump($rol);
+                if($rol == 1 || $momento_actual["cod_momento"] == '2' || $rol == null){                    
+                    
+                    if($_GET['momento'] == null)
+                    $momento = 1;
+                    
+                    $sql_momento = sprintf("select id from momento_evaluacion where cod_momento = %s and cod_evaluacion = %s", $momento, $evaluacion);
+                    $momento_evaluacion = BD::$db->queryOne($sql_momento);
+                }
+                else{
+                    if($rol == 2 && $momento_actual["cod_momento"] == '1' && $momento == 2){
+                        header('Location: index.php?mod=sievas&controlador=avances&accion=avances_evaluacion&momento=1');
+                    }
+                }
+            }        
+
+        $sql_rubros = sprintf('SELECT
+	lineamientos.id,
+	lineamientos.nom_lineamiento,
+	lineamientos.padre_lineamiento
+        FROM
+        lineamientos
+        INNER JOIN lineamientos_detalle_conjuntos ON lineamientos_detalle_conjuntos.cod_lineamiento = lineamientos.id
+        INNER JOIN lineamientos_conjuntos ON lineamientos_detalle_conjuntos.cod_conjunto = lineamientos_conjuntos.id
+        INNER JOIN evaluacion ON evaluacion.cod_conjunto = lineamientos_conjuntos.id
+        WHERE
+        lineamientos.padre_lineamiento = 0 AND
+        evaluacion.id = %s
+        ', $evaluacion);        
+        
+        
+        $rubros = BD::$db->queryAll($sql_rubros);
+        
+       
+//        var_dump(memory_get_usage());
+        
+        foreach($rubros as $key=>$r){
+//            var_dump(memory_get_usage());
+             $sql_lineamientos = sprintf("SELECT
+                    lineamientos.id AS lineamiento_id,
+                    lineamientos.nom_lineamiento,
+                    lineamientos.padre_lineamiento
+            FROM
+                    lineamientos
+            INNER JOIN lineamientos_detalle_conjuntos ON lineamientos_detalle_conjuntos.cod_lineamiento = lineamientos.id
+            INNER JOIN lineamientos_conjuntos ON lineamientos_detalle_conjuntos.cod_conjunto = lineamientos_conjuntos.id
+            WHERE
+                    lineamientos.padre_lineamiento = %s  order by num_orden asc", $r['id']);
+            
+            $lineamientos = BD::$db->queryAll($sql_lineamientos);
+            
+            
+            $sql_lineamientos_data = sprintf("SELECT
+            lineamientos.id,
+            lineamientos.id AS lineamiento_id,
+            lineamientos.nom_lineamiento,
+            momento_resultado_detalle.fortalezas as fortalezas,
+            momento_resultado_detalle.debilidades as debilidades,
+            momento_resultado_detalle.plan_mejoramiento as plan_mejoramiento,
+            momento_resultado_detalle.cod_gradacion_escala,
+            lineamientos.padre_lineamiento
+            FROM
+            evaluacion
+            INNER JOIN momento_evaluacion ON momento_evaluacion.cod_evaluacion = evaluacion.id
+            LEFT JOIN momento_resultado ON momento_resultado.cod_momento_evaluacion = momento_evaluacion.id
+            LEFT JOIN momento_resultado_detalle ON momento_resultado_detalle.cod_momento_resultado = momento_resultado.id
+            LEFT JOIN lineamientos ON momento_resultado_detalle.cod_lineamiento = lineamientos.id
+            LEFT JOIN gradacion_escalas ON momento_resultado_detalle.cod_gradacion_escala = gradacion_escalas.id
+            WHERE lineamientos.padre_lineamiento = %s AND evaluacion.id = %s AND momento_evaluacion.id = %s",
+                    $r['id'], 
+                    $evaluacion, 
+                    $momento_evaluacion);
+
+            
+            $sql_lineamientos_data_anterior = sprintf("SELECT
+            lineamientos.id,
+            lineamientos.id AS lineamiento_id,
+            lineamientos.nom_lineamiento,
+            momento_resultado_detalle.fortalezas as fortalezas,
+            momento_resultado_detalle.debilidades as debilidades,
+            momento_resultado_detalle.plan_mejoramiento as plan_mejoramiento,
+            momento_resultado_detalle.cod_gradacion_escala,
+            lineamientos.padre_lineamiento
+            FROM
+            evaluacion
+            INNER JOIN momento_evaluacion ON momento_evaluacion.cod_evaluacion = evaluacion.id
+            LEFT JOIN momento_resultado ON momento_resultado.cod_momento_evaluacion = momento_evaluacion.id
+            LEFT JOIN momento_resultado_detalle ON momento_resultado_detalle.cod_momento_resultado = momento_resultado.id
+            LEFT JOIN lineamientos ON momento_resultado_detalle.cod_lineamiento = lineamientos.id
+            LEFT JOIN gradacion_escalas ON momento_resultado_detalle.cod_gradacion_escala = gradacion_escalas.id
+            WHERE lineamientos.padre_lineamiento = %s AND evaluacion.id = %s AND momento_evaluacion.id = %s",
+                    $r['id'], 
+                    $evaluacion_anterior, 
+                    $momento_evaluacion);
+            
+//            var_dump($sql_lineamientos);
+            
+            
+            $lineamientos_data = BD::$db->queryAll($sql_lineamientos_data); 
+            $lineamientos_data_anterior = BD::$db->queryAll($sql_lineamientos_data_anterior);    
+            if(count($lineamientos_data) > 0){
+                foreach($lineamientos_data as $key => $ld){
+                if($r['id'] === $ld['padre_lineamiento']){
+                    foreach($lineamientos as $k=>$l){
+                        if($l['lineamiento_id'] === $ld['id']){
+                            //validacion                            
+                            $sql = sprintf("select er.validez from sievas.evaluacion_revisiones er 
+                            inner join (select cod_lineamiento, max(indice_revision)
+                             as MaxIndice from sievas.evaluacion_revisiones 
+                             where tipo_revision=%s and cod_lineamiento = %s 
+                             and cod_momento_evaluacion=%s group by cod_lineamiento) 
+                             as grupoer where er.indice_revision = grupoer.MaxIndice 
+                             and er.cod_lineamiento = %s and er.cod_momento_evaluacion=%s",
+                                    1, $ld['id'], $momento_evaluacion, $ld['id'], $momento_evaluacion);    
+                            
+                            
+                            $revision = BD::$db->queryRow($sql);
+                            
+                             $sql_retro = sprintf("select er.validez from sievas.evaluacion_revisiones er 
+                            inner join (select cod_lineamiento, max(indice_revision)
+                             as MaxIndice from sievas.evaluacion_revisiones 
+                             where tipo_revision=%s and cod_lineamiento = %s 
+                             and cod_momento_evaluacion=%s group by cod_lineamiento) 
+                             as grupoer where er.indice_revision = grupoer.MaxIndice 
+                             and er.cod_lineamiento = %s and er.cod_momento_evaluacion=%s",
+                                    2, $ld['id'], $momento_evaluacion, $ld['id'], $momento_evaluacion);
+                             
+                             $retroalimentacion = BD::$db->queryRow($sql_retro);
+
+                            $lineamientos[$k]['fortalezas'] = $ld['fortalezas'] == $lineamientos_data_anterior[$key]['fortalezas'] ? 1 : 0;
+                            $lineamientos[$k]['debilidades'] = $ld['debilidades'] == $lineamientos_data_anterior[$key]['debilidades'] ? 1 : 0;
+                            $lineamientos[$k]['plan_mejoramiento'] = $ld['plan_mejoramiento'] == $lineamientos_data_anterior[$key]['plan_mejoramiento'] ? 1 : 0;
+                            $lineamientos[$k]['desc_escala'] = $ld['desc_escala'];
+                            $lineamientos[$k]['validacion'] = $revision['validez'];
+                            $lineamientos[$k]['retroalimentacion'] = $retroalimentacion['validez'];
+                        }
+                    }
+                }  
+                $rubros[$key]['lineamientos'] = $lineamientos; 
+//                var_dump($lineamientos_data);
+           
+                foreach($rubros[$key]['lineamientos'] as $i=>$val){
+                     $sql_anexos = sprintf('SELECT
+                     count(*)
+                     FROM
+                     lineamientos
+                     INNER JOIN lineamientos_detalle_conjuntos ON lineamientos_detalle_conjuntos.cod_lineamiento = lineamientos.id
+                     INNER JOIN lineamientos_conjuntos ON lineamientos_detalle_conjuntos.cod_conjunto = lineamientos_conjuntos.id
+                     INNER JOIN evaluacion ON evaluacion.cod_conjunto = lineamientos_conjuntos.id
+                     INNER JOIN momento_evaluacion ON momento_evaluacion.cod_evaluacion = evaluacion.id
+                     INNER JOIN momento_resultado ON momento_resultado.cod_momento_evaluacion = momento_evaluacion.id
+                     INNER JOIN momento_resultado_anexo ON momento_resultado_anexo.cod_lineamiento = lineamientos.id 
+                     AND momento_resultado_anexo.cod_momento_evaluacion = momento_evaluacion.id
+                     INNER JOIN gen_documentos ON momento_resultado_anexo.cod_documento = gen_documentos.id
+                     WHERE
+                     lineamientos.id = %s
+                     AND evaluacion.id = %s
+                     AND momento_evaluacion.id = %s', $val['lineamiento_id'],$evaluacion, $momento_evaluacion);
+                     $rubros[$key]['lineamientos'][$i]['anexos'] = BD::$db->queryOne($sql_anexos);
+                }
+            }
+            }
+            else{
+                $rubros[$key]['lineamientos'] = $lineamientos;
+            }
+           
+            
+        }
+           $vars['rubros'] = $rubros;
+           $vars['rol'] = $rol;
+
+            
+            View::add_js('modules/sievas/scripts/avances/main.js'); 
+            View::add_js('modules/sievas/scripts/avances/avances_evaluacion.js'); 
+            View::render('avances/reporte_avance.php', $vars);
+        }
+        else{
+            header('Location: index.php?mod=sievas&controlador=evaluar&accion=guardar');
+        }
+    }
+
     
     public function avances_reevaluacion(){ 
         $evaluacion = Auth::info_usuario('evaluacion');        
