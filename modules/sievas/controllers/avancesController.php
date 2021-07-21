@@ -2157,6 +2157,27 @@ class avancesController extends ControllerBase{
         
         return BD::$db->queryRow($sql);
     }
+
+
+    public function get_momento_anterior(){
+        $evaluacion = Auth::info_usuario('ev_anterior');
+        $username = Auth::info_usuario('usuario');
+        $sql = "SELECT
+        comite.cod_persona,
+        evaluacion.id,
+        comite.cod_momento_evaluacion,
+        comite.cod_cargo,
+        momento_evaluacion.cod_momento,
+        momento_evaluacion.id as momento_id
+        FROM
+        comite
+        INNER JOIN momento_evaluacion ON comite.cod_momento_evaluacion = momento_evaluacion.id
+        INNER JOIN evaluacion ON momento_evaluacion.cod_evaluacion = evaluacion.id
+        INNER JOIN sys_usuario ON comite.cod_persona = sys_usuario.cod_persona
+        where evaluacion.id=$evaluacion and sys_usuario.username='$username'";
+        
+        return BD::$db->queryRow($sql);
+    }
     
     public function avances_evaluacion_old(){ 
         //58
@@ -2544,8 +2565,8 @@ class avancesController extends ControllerBase{
 
 
     public function avances_evaluacion_n(){ 
-        $evaluacion = Auth::info_usuario('evaluacion');    
-        $evaluacion_anterior = Auth::info_usuario('evaluacion_anterior');      
+        $evaluacion = Auth::info_usuario('evaluacion');   
+        $evaluacion_anterior = Auth::info_usuario('ev_anterior');      
         $rol = Auth::info_usuario('rol');
         
 //        var_dump(memory_get_usage());
@@ -2560,8 +2581,10 @@ class avancesController extends ControllerBase{
             $evaluacion_data = BD::$db->queryRow($sql_evaluacion);
             $vars['evaluacion_data'] = $evaluacion_data;
         }
+
         if($evaluacion > 0){
 //            var_dump(memory_get_usage());
+            
             if($rol == null){
                 $momento = $_GET['momento'];
                 if($_GET['momento'] == null)
@@ -2570,27 +2593,31 @@ class avancesController extends ControllerBase{
                
                 $sql_momento = sprintf("select id from momento_evaluacion where cod_momento = %s and cod_evaluacion = %s", $momento, $evaluacion);
                 $momento_evaluacion = BD::$db->queryOne($sql_momento);
+
+                $sql_momento_anterior = sprintf("select id from momento_evaluacion where cod_momento = %s and cod_evaluacion = %s", $momento, $evaluacion_anterior);
+                $momento_evaluacion_anterior = BD::$db->queryOne($sql_momento_anterior);
             }
             else{
                 $momento = $_GET['momento'];
                 $momento_actual = $this->get_momento_actual();
                 $momento_evaluacion = $momento_actual["momento_id"];
-                
-                
-                
-//                var_dump($momento_actual["cod_momento"]);
-//                var_dump($rol);
-                if($rol == 1 || $momento_actual["cod_momento"] == '2' || $rol == null){                    
+                $sql_momento_anterior = sprintf("select id from momento_evaluacion where cod_momento = %s and cod_evaluacion = %s", $momento_actual["cod_momento"], $evaluacion_anterior);
+                $momento_evaluacion_anterior = BD::$db->queryOne($sql_momento_anterior);
+
+                if($rol == 1 || $momento_actual["cod_momento"] == '2' || $rol == null){                   
                     
                     if($_GET['momento'] == null)
                     $momento = 1;
                     
                     $sql_momento = sprintf("select id from momento_evaluacion where cod_momento = %s and cod_evaluacion = %s", $momento, $evaluacion);
                     $momento_evaluacion = BD::$db->queryOne($sql_momento);
+
+                    $sql_momento_anterior = sprintf("select id from momento_evaluacion where cod_momento = %s and cod_evaluacion = %s", $momento, $evaluacion_anterior);
+                    $momento_evaluacion_anterior = BD::$db->queryOne($sql_momento_anterior);
                 }
                 else{
                     if($rol == 2 && $momento_actual["cod_momento"] == '1' && $momento == 2){
-                        header('Location: index.php?mod=sievas&controlador=avances&accion=avances_evaluacion&momento=1');
+                        header('Location: index.php?mod=sievas&controlador=avances&accion=avances_evaluacion_n&momento=1');
                     }
                 }
             }        
@@ -2631,13 +2658,14 @@ class avancesController extends ControllerBase{
             $lineamientos = BD::$db->queryAll($sql_lineamientos);
             
             
+            
             $sql_lineamientos_data = sprintf("SELECT
             lineamientos.id,
             lineamientos.id AS lineamiento_id,
             lineamientos.nom_lineamiento,
             momento_resultado_detalle.fortalezas as fortalezas,
-            momento_resultado_detalle.debilidades as debilidades,
-            momento_resultado_detalle.plan_mejoramiento as plan_mejoramiento,
+            length(momento_resultado_detalle.debilidades) as debilidades,
+            length(momento_resultado_detalle.plan_mejoramiento) as plan_mejoramiento,
             momento_resultado_detalle.cod_gradacion_escala,
             lineamientos.padre_lineamiento
             FROM
@@ -2652,14 +2680,14 @@ class avancesController extends ControllerBase{
                     $evaluacion, 
                     $momento_evaluacion);
 
-            
+
             $sql_lineamientos_data_anterior = sprintf("SELECT
             lineamientos.id,
             lineamientos.id AS lineamiento_id,
             lineamientos.nom_lineamiento,
             momento_resultado_detalle.fortalezas as fortalezas,
-            momento_resultado_detalle.debilidades as debilidades,
-            momento_resultado_detalle.plan_mejoramiento as plan_mejoramiento,
+            length(momento_resultado_detalle.debilidades) as debilidades,
+            length(momento_resultado_detalle.plan_mejoramiento) as plan_mejoramiento,
             momento_resultado_detalle.cod_gradacion_escala,
             lineamientos.padre_lineamiento
             FROM
@@ -2672,16 +2700,18 @@ class avancesController extends ControllerBase{
             WHERE lineamientos.padre_lineamiento = %s AND evaluacion.id = %s AND momento_evaluacion.id = %s",
                     $r['id'], 
                     $evaluacion_anterior, 
-                    $momento_evaluacion);
+                    $momento_evaluacion_anterior);
             
 //            var_dump($sql_lineamientos);
             
             
-            $lineamientos_data = BD::$db->queryAll($sql_lineamientos_data); 
-            $lineamientos_data_anterior = BD::$db->queryAll($sql_lineamientos_data_anterior);    
+            $lineamientos_data = BD::$db->queryAll($sql_lineamientos_data);   
+            $lineamientos_data_anterior = BD::$db->queryAll($sql_lineamientos_data_anterior); 
+            $c = 0;
             if(count($lineamientos_data) > 0){
-                foreach($lineamientos_data as $key => $ld){
-                if($r['id'] === $ld['padre_lineamiento']){
+                foreach($lineamientos_data as $ld){
+                if($r['id'] === $ld['padre_lineamiento'] && $r['id'] === $lineamientos_data_anterior[$c]['padre_lineamiento']){
+                    
                     foreach($lineamientos as $k=>$l){
                         if($l['lineamiento_id'] === $ld['id']){
                             //validacion                            
@@ -2708,9 +2738,9 @@ class avancesController extends ControllerBase{
                              
                              $retroalimentacion = BD::$db->queryRow($sql_retro);
 
-                            $lineamientos[$k]['fortalezas'] = $ld['fortalezas'] == $lineamientos_data_anterior[$key]['fortalezas'] ? 1 : 0;
-                            $lineamientos[$k]['debilidades'] = $ld['debilidades'] == $lineamientos_data_anterior[$key]['debilidades'] ? 1 : 0;
-                            $lineamientos[$k]['plan_mejoramiento'] = $ld['plan_mejoramiento'] == $lineamientos_data_anterior[$key]['plan_mejoramiento'] ? 1 : 0;
+                            $lineamientos[$k]['fortalezas'] = $ld['fortalezas'] === $lineamientos_data_anterior[$c]['fortalezas'] ? 0 : 1;
+                            $lineamientos[$k]['debilidades'] = $ld['debilidades'];
+                            $lineamientos[$k]['plan_mejoramiento'] = $ld['plan_mejoramiento'];
                             $lineamientos[$k]['desc_escala'] = $ld['desc_escala'];
                             $lineamientos[$k]['validacion'] = $revision['validez'];
                             $lineamientos[$k]['retroalimentacion'] = $retroalimentacion['validez'];
@@ -2718,7 +2748,6 @@ class avancesController extends ControllerBase{
                     }
                 }  
                 $rubros[$key]['lineamientos'] = $lineamientos; 
-//                var_dump($lineamientos_data);
            
                 foreach($rubros[$key]['lineamientos'] as $i=>$val){
                      $sql_anexos = sprintf('SELECT
@@ -2739,6 +2768,7 @@ class avancesController extends ControllerBase{
                      AND momento_evaluacion.id = %s', $val['lineamiento_id'],$evaluacion, $momento_evaluacion);
                      $rubros[$key]['lineamientos'][$i]['anexos'] = BD::$db->queryOne($sql_anexos);
                 }
+                $c++;
             }
             }
             else{
