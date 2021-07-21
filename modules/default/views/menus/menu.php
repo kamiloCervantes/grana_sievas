@@ -186,7 +186,7 @@ if (Session::get('rol') == 1) {?>
            <?php if(Auth::info_usuario('ev_red') == 0) { ?>
         <li><a href="index.php?mod=sievas&controlador=avances&accion=avances_reevaluacion">
         <?php } else { ?>
-        <li><a href="index.php?mod=sievas&controlador=avances&accion=avances_evaluacion_r">
+        <li><a href="index.php?mod=sievas&controlador=avances&accion=avances_reevaluacion">
         <?php } ?>
            
             <?php } else { ?>
