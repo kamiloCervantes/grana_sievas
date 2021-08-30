@@ -132,7 +132,8 @@ foreach ($rubros as $r){ ?>
         <tr>
             <td colspan="3" class="print"><strong><?php echo $t->__('Anexos', Auth::info_usuario('idioma')); ?>: </strong><?php 
                 foreach($l['anexos'] as $a){ ?>
-                	<a href="<?php echo $a['ruta']?>" target="_blank"><span class="label label-primary">
+                    <a href="<?php echo $a['ruta']?>" target="_blank"><span data-documento="<?php echo $a['id']?>" class="label <?php echo $a['nuevo'] > 0 ? 'label-success' : 'label-primary' ?>">
+
                     	<i class="glyphicon glyphicon-file"></i> <?php echo $a['nombre']?></span></a><?php 
 				}   ?></td>
 		</tr>

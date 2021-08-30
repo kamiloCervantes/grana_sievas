@@ -190,7 +190,8 @@ sieva_evaluar.init = function(){
                      url : url,
                      nombre : nombre,
                      lineamiento_id : lineamiento_id,
-                     momento : momento
+                     momento : momento,
+                     nuevo : 1
                   });
                   
                   jqxhr.done(function(){
@@ -897,6 +898,7 @@ sieva_evaluar.cargar_popup_anexos = function(){
         formData.append('archivo', file);
         formData.append('lineamiento', lineamiento_id);
         formData.append('momento', momento);
+        formData.append('nuevo', 1);
         
         var jqxhr = $.ajax({
             url: 'index.php?mod=sievas&controlador=evaluar&accion=upload_anexo',
