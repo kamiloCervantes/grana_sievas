@@ -3648,7 +3648,8 @@ class avancesController extends ControllerBase{
                  $sql_anexos = sprintf('SELECT
                 gen_documentos.ruta,
                 gen_documentos.id,
-                gen_documentos.nombre
+                gen_documentos.nombre,
+                momento_resultado_anexo.nuevo
                 FROM
                 gen_documentos
                 INNER JOIN momento_resultado_anexo ON momento_resultado_anexo.cod_documento = gen_documentos.id
