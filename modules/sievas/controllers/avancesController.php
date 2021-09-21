@@ -3424,7 +3424,7 @@ class avancesController extends ControllerBase{
                 $momento = $_GET['momento'];
 
                 if($_GET['momento'] == null)
-                        $momento = $momento_actual["cod_momento"];
+                      $momento = 1;
                 if($rol == 1 || $momento_actual["cod_momento"] == '2' || $rol == null){
                     $evaluacion = Auth::info_usuario('evaluacion');
                     if($evaluacion > 0){
