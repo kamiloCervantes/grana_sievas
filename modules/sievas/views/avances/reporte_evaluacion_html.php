@@ -48,11 +48,7 @@ foreach ($rubros as $r){ ?>
     
     <br/>
     <p><strong>Grafindicámetro del rubro</strong></p>
-<<<<<<< HEAD
-    <img src="index.php?mod=sievas&controlador=avances&accion=generar_radar&rid=<?php echo $r['id'] ?>&momento=<?php echo $momento ?>" />
-=======
     <img class="grafindicametro-rubros" data-datos='<?php echo $r['calificaciones'] == null ? '0,0,0,0,0,0,0,0,0,0' : implode(',',$r['calificaciones'])?>'>                  
->>>>>>> 791f598d53ac44486b288a7d0830f5957d18fa86
     <br/>
 <?php 
 $i++; 

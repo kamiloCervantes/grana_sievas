@@ -1136,8 +1136,10 @@ avances.initreporteevaluacion = function(){
         }
     });
 
-    console.log($('#cvs')[0].toDataURL());
-    $('#cvs2').attr('src', $('#cvs')[0].toDataURL());
+    if($('#cvs')[0]){
+        $('#cvs2').attr('src', $('#cvs')[0].toDataURL());
+    }
+    
 
     $('.guardarword').on('click', function(e){
         e.preventDefault();
