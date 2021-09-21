@@ -22,10 +22,7 @@
 $i = 1;
 foreach ($rubros as $r){ ?>
 <strong><?php echo Auth::info_usuario('ev_cna') > 0 ? 'FACTOR ': 'RUBRO '?><?php echo "$i. ".$r['nom_lineamiento']; ?></strong><br/>
-<<<<<<< HEAD
 
-=======
->>>>>>> 791f598d53ac44486b288a7d0830f5957d18fa86
 <?php 
 	$c = 1;
     foreach($r['lineamientos'] as $l){ ?>
