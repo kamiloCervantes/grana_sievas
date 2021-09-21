@@ -3398,7 +3398,7 @@ class avancesController extends ControllerBase{
         $momento_evaluacion = 0;
         $momento = 0;
         $evaluacion_data = array();
-//        var_dump($rol);
+
         if($rol == null){
             $evaluacion = $_GET['evaluacion'];
             $sql_evaluacion = sprintf("SELECT e.etiqueta, e.ev_cna, p.programa, i.nom_institucion, pa.nom_pais FROM sievas.evaluacion as e
@@ -3422,8 +3422,9 @@ class avancesController extends ControllerBase{
                 $momento_actual = $this->get_momento_actual();
                 $momento_evaluacion = $momento_actual["momento_id"];
                 $momento = $_GET['momento'];
+
                 if($_GET['momento'] == null)
-                        $momento = 1;
+                        $momento = $momento_actual["cod_momento"];
                 if($rol == 1 || $momento_actual["cod_momento"] == '2' || $rol == null){
                     $evaluacion = Auth::info_usuario('evaluacion');
                     if($evaluacion > 0){

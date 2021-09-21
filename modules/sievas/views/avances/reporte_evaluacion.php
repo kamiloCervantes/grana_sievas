@@ -48,8 +48,8 @@
     <?php } ?>
 	<?php echo $t->__('Resumen Evaluación', Auth::info_usuario('idioma')); ?>
     <select id="tipo_momento" style="width:120px" data-evaluacion="<?php echo $_GET['evaluacion']?>">
-        <option value="1"><?php echo $t->__('Interna', Auth::info_usuario('idioma')); ?></option>
-        <option value="2"><?php echo $t->__('Externa', Auth::info_usuario('idioma')); ?></option>
+        <option value="1" <?php echo ($momento == "1" ? 'selected':'') ?>><?php echo $t->__('Interna', Auth::info_usuario('idioma')); ?></option>
+        <option value="2" <?php echo ($momento == "2" ? 'selected':'') ?>><?php echo $t->__('Externa', Auth::info_usuario('idioma')); ?></option>
     </select>
         <?= " :: $_SESSION[evaluado]"; ?>
 </h4>
