@@ -1,3 +1,30 @@
+<?php
+function stripAttributes($s, $allowedattr = array()) {
+    if (preg_match_all("/<[^>]*\\s([^>]*)\\/*>/msiU", $s, $res, PREG_SET_ORDER)) {
+     foreach ($res as $r) {
+       $tag = $r[0];
+       $attrs = array();
+       preg_match_all("/\\s.*=(['\"]).*\\1/msiU", " " . $r[1], $split, PREG_SET_ORDER);
+       foreach ($split as $spl) {
+        $attrs[] = $spl[0];
+       }
+       $newattrs = array();
+       foreach ($attrs as $a) {
+        $tmp = explode("=", $a);
+        if (trim($a) != "" && (!isset($tmp[1]) || (trim($tmp[0]) != "" && !in_array(strtolower(trim($tmp[0])), $allowedattr)))) {
+  
+        } else {
+            $newattrs[] = $a;
+        }
+       }
+       $attrs = implode(" ", $newattrs);
+       $rpl = str_replace($r[1], $attrs, $tag);
+       $s = str_replace($tag, $rpl, $s);
+     }
+    }
+    return $s;
+  }
+?>
 
 <style>
     .table thead>tr>th,.table tbody>tr>th,.table tfoot>tr>th,.table thead>tr>td,.table tbody>tr>td,.table tfoot>tr>td{
@@ -120,10 +147,10 @@ foreach ($rubros as $r){ ?>
             <!--<td width="10%" style="padding-left:40px; background:#FEDADF;"><strong>Anexos</strong></td>-->
         </tr>
         <tr> 
-            <td class="print" style="max-width: 10em"><?php echo ($l['fortalezas'] == null ? 'N/A' : urldecode($l['fortalezas']))?></td>
-			<td class="print" style="max-width: 10em"><?php echo ($l['debilidades'] == null ? 'N/A' : urldecode($l['debilidades']))?></td>      
+            <td class="print" style="max-width: 10em"><?php echo ($l['fortalezas'] == null ? 'N/A' : stripAttributes(urldecode($l['fortalezas'])))?></td>
+			<td class="print" style="max-width: 10em"><?php echo ($l['debilidades'] == null ? 'N/A' : stripAttributes(urldecode($l['debilidades'])))?></td>      
             <td class="print" style="max-width: 10em"><?php echo ($l['plan_mejoramiento'] == null ? 'N/A' : 
-				urldecode($l['plan_mejoramiento']))?></td>
+				stripAttributes(urldecode($l['plan_mejoramiento'])))?></td>
         </tr>
         <tr>
             <td colspan="3"><strong><?php echo $t->__('Calificación', Auth::info_usuario('idioma')); ?>: </strong> <?php echo ($l['desc_escala'] == null ? 'N/A' : 
