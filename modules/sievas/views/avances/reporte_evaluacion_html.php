@@ -21,20 +21,20 @@
     <?php 
 $i = 1;
 foreach ($rubros as $r){ ?>
-<strong><?php echo Auth::info_usuario('ev_cna') > 0 ? 'FACTOR ': 'RUBRO '?><?php echo "$i. ".$r['nom_lineamiento']; ?></strong><br/>
+<div style="text-align:left"><strong><?php echo Auth::info_usuario('ev_cna') > 0 ? 'FACTOR ': 'RUBRO '?><?php echo "$i. ".$r['nom_lineamiento']; ?></strong><br/></div>
 
 <?php 
 	$c = 1;
     foreach($r['lineamientos'] as $l){ ?>
-                    <strong><?= "$i.$c. $l[nom_lineamiento]"; ?></strong><br/>
+                    <div style="text-align:left"><strong><?= "$i.$c. $l[nom_lineamiento]"; ?></strong><br/></div>
 
 <strong>Fortalezas</strong>
-<p><?php echo ($l['fortalezas'] == null ? 'N/A' : urldecode($l['fortalezas']))?></p>
+<div style="text-align:justify"><?php echo ($l['fortalezas'] == null ? 'N/A' : urldecode($l['fortalezas']))?></div>
 <strong>Debilidades</strong>
-<p><?php echo ($l['debilidades'] == null ? 'N/A' : urldecode($l['debilidades']))?><p>
+<div style="text-align:justify"><?php echo ($l['debilidades'] == null ? 'N/A' : urldecode($l['debilidades']))?><div>
 <strong>Plan de mejoramiento</strong>
-<p><?php echo ($l['plan_mejoramiento'] == null ? 'N/A' : urldecode($l['plan_mejoramiento']))?></p>
-<strong>Calificación: </strong> <?php echo ($l['desc_escala'] == null ? 'N/A' : $l['desc_escala'])?><br/>
+<div style="text-align:justify"><?php echo ($l['plan_mejoramiento'] == null ? 'N/A' : urldecode($l['plan_mejoramiento']))?></div>
+<div style="text-align:left"><strong>Calificación: </strong> <?php echo ($l['desc_escala'] == null ? 'N/A' : $l['desc_escala'])?><br/></div>
     <?php if(Auth::info_usuario('ev_cna') > 0 || $evaluacion_data['ev_cna'] > 0){ ?>
 <br/><strong>Análisis de indicadores</strong><br/>
 <?php foreach($l['analisis_indicador'] as $key=>$a){ ?>
@@ -66,11 +66,11 @@ foreach ($rubros as $r){ ?>
                     <strong><?= "$i.$c. $l[nom_lineamiento]"; ?></strong><br/>
 
 <strong>Fortalezas</strong>
-<p><?php echo ($l['fortalezas'] == null ? 'N/A' : urldecode($l['fortalezas']))?></p>
+<p style="text-align:justify"><?php echo ($l['fortalezas'] == null ? 'N/A' : urldecode($l['fortalezas']))?></p>
 <strong>Debilidades</strong>
-<p><?php echo ($l['debilidades'] == null ? 'N/A' : urldecode($l['debilidades']))?><p>
+<p style="text-align:justify"><?php echo ($l['debilidades'] == null ? 'N/A' : urldecode($l['debilidades']))?><p>
 <strong>Plan de mejoramiento</strong>
-<p><?php echo ($l['plan_mejoramiento'] == null ? 'N/A' : urldecode($l['plan_mejoramiento']))?></p>
+<p style="text-align:justify"><?php echo ($l['plan_mejoramiento'] == null ? 'N/A' : urldecode($l['plan_mejoramiento']))?></p>
 <strong>Calificación: </strong> <?php echo ($l['desc_escala'] == null ? 'N/A' : $l['desc_escala'])?><br/>
     <?php if(Auth::info_usuario('ev_cna') > 0 || $evaluacion_data['ev_cna'] > 0){ ?>
 <br/><strong>Análisis de indicadores</strong><br/>
