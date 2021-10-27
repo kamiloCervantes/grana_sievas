@@ -22,19 +22,21 @@
 $i = 1;
 foreach ($rubros as $r){ ?>
 <div style="text-align:left"><strong><?php echo Auth::info_usuario('ev_cna') > 0 ? 'FACTOR ': 'RUBRO '?><?php echo "$i. ".$r['nom_lineamiento']; ?></strong><br/></div>
-
+<br/>
 <?php 
 	$c = 1;
     foreach($r['lineamientos'] as $l){ ?>
                     <div style="text-align:left"><strong><?= "$i.$c. $l[nom_lineamiento]"; ?></strong><br/></div>
-
+<br/>
 <strong>Fortalezas</strong>
 <div style="text-align:justify"><?php echo ($l['fortalezas'] == null ? 'N/A' : urldecode($l['fortalezas']))?></div>
 <strong>Debilidades</strong>
 <div style="text-align:justify"><?php echo ($l['debilidades'] == null ? 'N/A' : urldecode($l['debilidades']))?><div>
 <strong>Plan de mejoramiento</strong>
+<br/>
 <div style="text-align:justify"><?php echo ($l['plan_mejoramiento'] == null ? 'N/A' : urldecode($l['plan_mejoramiento']))?></div>
 <div style="text-align:left"><strong>Calificación: </strong> <?php echo ($l['desc_escala'] == null ? 'N/A' : $l['desc_escala'])?><br/></div>
+<br/>
     <?php if(Auth::info_usuario('ev_cna') > 0 || $evaluacion_data['ev_cna'] > 0){ ?>
 <br/><strong>Análisis de indicadores</strong><br/>
 <?php foreach($l['analisis_indicador'] as $key=>$a){ ?>
