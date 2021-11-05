@@ -1675,8 +1675,6 @@ class avancesController extends ControllerBase{
                 momento_evaluacion.cod_momento = %s
                 and
                 momento_resultado_detalle.activo = 1
-                and
-                gradacion_escalas.valor_escala > 0
                 GROUP BY
                 lineamientos.padre_lineamiento
                 ) as s2 on s2.padre = s1.lineamiento_id order by s1.num_orden", $evaluacion, $evaluacion, $momento);
