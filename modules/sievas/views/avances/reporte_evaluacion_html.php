@@ -8,7 +8,20 @@
         font-size: 12px;
         padding: 10px;
     }
+    
+    p, ul{
+        margin: 0px;
+    }
 </style>
+<?php
+  $cleanup_array = array('<br>','<p>&nbsp;</p>','<div><br></div>','<p></p>','<div></div>',
+    '<p class="Default" style="margin-left: 18pt;">&nbsp;</p>',
+    '<h1 class="title" id="page-title" style="margin-top: 0px; margin-bottom: 0px; padding: 12px 0px 24px; border: 0px; outline: 0px; vertical-align: bottom; font-variant-numeric: inherit; font-variant-east-asian: inherit; font-stretch: inherit; line-height: 35px; letter-spacing: -0.05em; background: transparent; color: rgb(115, 134, 138); min-height: 24px;"></h1>',
+    '&nbsp;','<p style="box-sizing: border-box; margin-top: 0px; margin-right: 0px; margin-bottom: 10px; margin-left: 0px; text-align: justify; ">',
+    '<p style="margin: 0px 0px 7.5pt; line-height: 16px; box-sizing: border-box;">',
+    '<p style="margin: 0px 0px 10px; box-sizing: border-box;">');
+  $replacing_array = array('','','','','','','','','<p>','<p>','<p>');
+?>
 <div class="controls" style="background: #ccc; margin-top: 50px; padding: 5px">
     <form id="generate_word" method="post" action="index.php?mod=sievas&controlador=avances&accion=word_gen">
         <input type="hidden" id="word_data" name="word_data">
@@ -28,13 +41,13 @@ foreach ($rubros as $r){ ?>
     foreach($r['lineamientos'] as $l){ ?>
                     <div style="text-align:left"><strong><?= "$i.$c. $l[nom_lineamiento]"; ?></strong><br/></div>
 <br/>
-<strong>Fortalezas</strong>
-<div style="text-align:justify"><?php echo ($l['fortalezas'] == null ? 'N/A' : urldecode($l['fortalezas']))?></div>
+<b>Fortalezas</b>
+<div style="text-align:justify"><?php echo ($l['fortalezas'] == null ? 'N/A' : str_replace($cleanup_array,$replacing_array,urldecode($l['fortalezas'])))?></div>
 <strong>Debilidades</strong>
-<div style="text-align:justify"><?php echo ($l['debilidades'] == null ? 'N/A' : urldecode($l['debilidades']))?><div>
+<div style="text-align:justify"><?php echo ($l['debilidades'] == null ? 'N/A' : str_replace($cleanup_array,$replacing_array,urldecode($l['debilidades'])))?></div>
 <strong>Plan de mejoramiento</strong>
+<div style="text-align:justify"><?php echo ($l['plan_mejoramiento'] == null ? 'N/A' : str_replace($cleanup_array,$replacing_array,urldecode($l['plan_mejoramiento'])))?></div>
 <br/>
-<div style="text-align:justify"><?php echo ($l['plan_mejoramiento'] == null ? 'N/A' : urldecode($l['plan_mejoramiento']))?></div>
 <div style="text-align:left"><strong>Calificación: </strong> <?php echo ($l['desc_escala'] == null ? 'N/A' : $l['desc_escala'])?><br/></div>
 <br/>
     <?php if(Auth::info_usuario('ev_cna') > 0 || $evaluacion_data['ev_cna'] > 0){ ?>
@@ -68,11 +81,11 @@ foreach ($rubros as $r){ ?>
                     <strong><?= "$i.$c. $l[nom_lineamiento]"; ?></strong><br/>
 
 <strong>Fortalezas</strong>
-<p style="text-align:justify"><?php echo ($l['fortalezas'] == null ? 'N/A' : urldecode($l['fortalezas']))?></p>
+<p style="text-align:justify"><?php echo ($l['fortalezas'] == null ? 'N/A' : str_replace($cleanup_array,$replacing_array,urldecode($l['fortalezas'])))?></p>
 <strong>Debilidades</strong>
-<p style="text-align:justify"><?php echo ($l['debilidades'] == null ? 'N/A' : urldecode($l['debilidades']))?><p>
+<p style="text-align:justify"><?php echo ($l['debilidades'] == null ? 'N/A' : str_replace($cleanup_array,$replacing_array,urldecode($l['debilidades'])))?><p>
 <strong>Plan de mejoramiento</strong>
-<p style="text-align:justify"><?php echo ($l['plan_mejoramiento'] == null ? 'N/A' : urldecode($l['plan_mejoramiento']))?></p>
+<p style="text-align:justify"><?php echo ($l['plan_mejoramiento'] == null ? 'N/A' : str_replace($cleanup_array,$replacing_array,urldecode($l['plan_mejoramiento'])))?></p>
 <strong>Calificación: </strong> <?php echo ($l['desc_escala'] == null ? 'N/A' : $l['desc_escala'])?><br/>
     <?php if(Auth::info_usuario('ev_cna') > 0 || $evaluacion_data['ev_cna'] > 0){ ?>
 <br/><strong>Análisis de indicadores</strong><br/>
@@ -152,10 +165,10 @@ foreach ($rubros as $r){ ?>
             <!--<td width="10%" style="padding-left:40px; background:#FEDADF;"><strong>Anexos</strong></td>-->
         </tr>
         <tr> 
-            <td class="print"><?php echo ($l['fortalezas'] == null ? 'N/A' : urldecode($l['fortalezas']))?></td>
-			<td class="print"><?php echo ($l['debilidades'] == null ? 'N/A' : urldecode($l['debilidades']))?></td>      
+            <td class="print"><?php echo ($l['fortalezas'] == null ? 'N/A' : str_replace($cleanup_array,$replacing_array,urldecode($l['fortalezas'])))?></td>
+			<td class="print"><?php echo ($l['debilidades'] == null ? 'N/A' : str_replace($cleanup_array,$replacing_array,urldecode($l['debilidades'])))?></td>      
             <td class="print"><?php echo ($l['plan_mejoramiento'] == null ? 'N/A' : 
-				urldecode($l['plan_mejoramiento']))?></td>
+				str_replace($cleanup_array,$replacing_array,urldecode($l['plan_mejoramiento'])))?></td>
         </tr>
         <tr>
             <td colspan="3"><strong>Calificación: </strong> <?php echo ($l['desc_escala'] == null ? 'N/A' : 
