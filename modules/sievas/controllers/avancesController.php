@@ -1659,13 +1659,12 @@ class avancesController extends ControllerBase{
                 ) as s1
                 left join (
                 SELECT
-                Avg(gradacion_escalas.valor_escala) as calificacion,
+                Avg(momento_resultado_detalle.cod_gradacion_escala) as calificacion,
                 lineamientos.padre_lineamiento as padre,
                 evaluacion.id
                 FROM
                 lineamientos
                 LEFT JOIN momento_resultado_detalle ON momento_resultado_detalle.cod_lineamiento = lineamientos.id
-                left JOIN gradacion_escalas ON momento_resultado_detalle.cod_gradacion_escala = gradacion_escalas.id
                 LEFT JOIN momento_resultado ON momento_resultado_detalle.cod_momento_resultado = momento_resultado.id
                 inner JOIN momento_evaluacion ON momento_resultado.cod_momento_evaluacion = momento_evaluacion.id
                 inner JOIN evaluacion ON momento_evaluacion.cod_evaluacion = evaluacion.id
