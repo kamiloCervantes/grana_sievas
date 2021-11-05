@@ -1683,7 +1683,7 @@ class avancesController extends ControllerBase{
             
             $calificaciones = BD::$db->queryAll($sql_calificaciones);
             
-//            var_dump($calificaciones);
+            var_dump($calificaciones);
 //
             $rubros = array_map(function($e){
                 return $e['calificaciones'];                
