@@ -292,7 +292,7 @@ class usuariosController extends ControllerBase
                         Auth::info_usuario('usuario'), $evaluacion);
                         
                 $evaluacion_centro = BD::$db->queryRow($sql);
-                 
+
                 Auth::info_usuario('rol',$rol);
                 Auth::info_usuario('pais',$pais);
                 Auth::info_usuario('tipo_evaluado',$tipo_evaluado);

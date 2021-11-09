@@ -30,6 +30,7 @@
         </div>
         <br/>
         <input type="submit" class="btn btn-primary" value="Guardar">
+        <a href="index.php?mod=sievas&controlador=evaluar&accion=exportar_evaluacion_complementaria" class="btn btn-default">Exportar</a>
     </form>
 <div class="insertar-url-form-tpl hide">
     <form>

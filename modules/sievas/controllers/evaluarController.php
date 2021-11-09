@@ -5486,7 +5486,7 @@ class evaluarController extends ControllerBase{
             header("Location: index.php?mod=sievas&controlador=evaluar&accion=evaluacion_complementaria_nal");
         }
         
-          $momento = $_GET['cod_momento'];
+        $momento = $_GET['cod_momento'];
         if($momento == null){
             $tmp = $this->get_momento_actual();
             $momento = $tmp['cod_momento'];
@@ -5535,7 +5535,7 @@ class evaluarController extends ControllerBase{
           
        }
        
-         $query_evaluacion_data = sprintf("select * from evaluacion where id=%s", Auth::info_usuario('evaluacion'));
+       $query_evaluacion_data = sprintf("select * from evaluacion where id=%s", Auth::info_usuario('evaluacion'));
        $evaluacion_data = BD::$db->queryRow($query_evaluacion_data);
 
        $vars['evaluacion'] = $evaluacion_data['etiqueta'];
@@ -5614,6 +5614,42 @@ class evaluarController extends ControllerBase{
         View::add_js('modules/sievas/scripts/evaluar/evaluacion_complementaria.js');
 //        View::add_js('modules/sievas/scripts/evaluar.js');
         View::render('evaluar/evaluacion_complementaria.php', $vars);
+    }
+
+    public function exportar_evaluacion_complementaria(){  
+        $evaluacion = Auth::info_usuario('evaluacion');
+        $momento = $_GET['cod_momento'];
+        if($momento == null){
+            $tmp = $this->get_momento_actual();
+            $momento = $tmp['cod_momento'];
+        }
+
+        $query_evaluacion_data = sprintf("select * from evaluacion where id=%s", Auth::info_usuario('evaluacion'));
+        $evaluacion_data = BD::$db->queryRow($query_evaluacion_data);
+
+        $vars['evaluacion'] = $evaluacion_data['etiqueta'];
+            $momento = $this->get_momento_actual();
+            if($momento == null){
+                if($_GET['momento'] == null){
+                    $momento['cod_momento'] = 1;
+                }
+                else{
+                    $momento['cod_momento'] = $_GET['momento'];
+                }
+
+            }
+
+        $sql_creador = sprintf('select cod_persona from sys_usuario where username="%s"', Auth::info_usuario('usuario'));
+        $creador = BD::$db->queryOne($sql_creador);
+        $sql_ev_comp = sprintf('select id,evaluacion from evaluacion_complemento where momento=%s and cod_evaluacion = %s and creador=%s',
+        $momento['cod_momento'], $evaluacion, $creador);
+
+        $ev_comp_def = BD::$db->queryRow($sql_ev_comp);
+        $vars['ev_comp'] = $ev_comp_def;
+        View::add_js('public/js/wordgen/FileSaver.min.js'); 
+        View::add_js('public/js/wordgen/jquery.wordexport.js'); 
+        View::add_js('modules/sievas/scripts/evaluar/evaluacion_complementaria_exportar.js'); 
+        View::render('evaluar/exportar_evaluacion_complementaria.php', $vars, 'reporte.php');
     }
 
 }

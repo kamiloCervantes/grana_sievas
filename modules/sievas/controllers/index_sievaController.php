@@ -60,6 +60,7 @@ class index_sievaController extends ControllerBase{
 		
 		$vars['tipo_evaluado'] = $tipo_evaluado;
         $vars['evaluado'] = $evaluado;
+        Auth::info_usuario('evaluado_nombre',$evaluado['evaluado']);
 		View::render('welcome.php', $vars);         
     }      
 }
