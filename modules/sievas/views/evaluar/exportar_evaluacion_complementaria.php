@@ -36,7 +36,7 @@
 </div>
 <div class="word_version" style="border: 1px solid #ccc; background: #fff; padding: 60px;">
 <div class="comp_header" style="text-align:center">
-    <img src="/public/img/logo2.png" style="width: 200px">
+    <img src="public/img/logo2.png" style="width: 200px">
     <p class="grana-title" style="color: #a60000;font-weight:bold;font-size: 20px;">Generation of Resources for Accreditation in Nations of the America</p>
 </div>
 <br/>
